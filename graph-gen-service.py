@@ -85,7 +85,11 @@ def main():
             gcmd_run(f"M400")
 
             # Subscribe to accelerometer data
-            request = {"method": "adxl345/dump_adxl345", "params": {"sensor": f"{sensor_name_x}"}}
+            if axis == 'x':
+                sensor = sensor_name_x
+            if axis == 'y':
+                sensor = sensor_name_y
+            request = {"method": "adxl345/dump_adxl345", "params": {"sensor": f"{sensor}"}}
             file_name = f"/home/{os.environ["USER"]}/printer_data/config/raw_dump_{axis}_{time.strftime("%Y%m%d_%H%M%S")}.csv"
             generator, cancel = krpc.subscribe(request)
             f = open(file_name, "w")
@@ -117,29 +121,6 @@ def main():
         except Error as e:
             kprint(e, error=True)
         gcmd_run(f"RESTORE_GCODE_STATE NAME=manual_resonance_run MOVE=1")
-    # print(settings)
-
-
-    # Test subscription
-    # import statistics
-    # request = {"method": "adxl345/dump_adxl345", "params": {"sensor": "adxl345"}}
-    # pkgs = 5
-    # generator, cancel = krpc.subscribe(request)
-    # for resp in generator():
-    #     params = resp.get("params")
-    #     if params is None:
-    #         continue
-    #     d = params["data"]
-    #     val = [row[1] for row in d]
-
-    #     # Compute mean and standard deviation
-    #     mean_val = statistics.mean(val)
-    #     stddev_val = statistics.stdev(val) if len(val) > 1 else 0.0
-
-    #     print(f"Mean value: {mean_val:.3f}, StdDev: {stddev_val:.3f}")
-    #     pkgs -= 1
-    #     if pkgs <= 0:
-    #         cancel()
 
 if __name__ == "__main__":
     main()
