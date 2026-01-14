@@ -90,7 +90,7 @@ def main():
             if axis == 'y':
                 sensor = sensor_name_y
             request = {"method": "adxl345/dump_adxl345", "params": {"sensor": f"{sensor}"}}
-            file_name = f"/home/{os.environ["USER"]}/printer_data/config/raw_dump_{axis}_{time.strftime("%Y%m%d_%H%M%S")}.csv"
+            file_name = f'/home/{os.environ.get("USER")}/printer_data/config/raw_dump_{axis}_{time.strftime("%Y%m%d_%H%M%S")}.csv'
             generator, cancel = krpc.subscribe(request)
             f = open(file_name, "w")
             f.write("#time,accel_x,accel_y,accel_z\n")
@@ -108,9 +108,9 @@ def main():
             cancel()
             wth.join()
 
-            cmd = [f"/home/{os.environ["USER"]}/klipper/scripts/calibrate_shaper.py"]
+            cmd = [f'/home/{os.environ.get("USER")}/klipper/scripts/calibrate_shaper.py']
             cmd += [f"{file_name}"]
-            cmd += ["-o"] + [f"/home/{os.environ["USER"]}/printer_data/config/shaper_{axis}_graph.png"]
+            cmd += ["-o"] + [f'/home/{os.environ.get("USER")}/printer_data/config/shaper_{axis}_graph.png']
             # Generate graphs
             result = subprocess.run(
                 cmd,
