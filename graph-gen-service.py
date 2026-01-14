@@ -80,15 +80,16 @@ def main():
         x, y, z = probe_points[0]
         try:
             gcmd_run(f"SAVE_GCODE_STATE NAME=manual_resonance_run")
-            gcmd_run(f"G90")
-            gcmd_run(f"G0 X{x} Y{y} Z{z}")
-            gcmd_run(f"M400")
 
             # Home all axes if needed
             request = {"method": "objects/query", "params": {"toolhead": ["homed_axes"]}}
             homed_axes_resp = krpc.query(request)
             if 'xyz' not in homed_axes_resp.lower():
                 gcmd_run("G28")
+            
+            gcmd_run(f"G90")
+            gcmd_run(f"G0 X{x} Y{y} Z{z}")
+            gcmd_run(f"M400")
 
             # Subscribe to accelerometer data
             if axis == 'x':
