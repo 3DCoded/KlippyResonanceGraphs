@@ -82,11 +82,11 @@ def main():
             gcmd_run(f"SAVE_GCODE_STATE NAME=manual_resonance_run")
 
             # Home all axes if needed
-            request = {"method": "objects/query", "params": {"toolhead": ["homed_axes"]}}
+            request = {"method": "objects/query", "params": {"objects": {"toolhead": ["homed_axes"]}}}
             homed_axes_resp = krpc.query(request)
-            if 'xyz' not in homed_axes_resp.lower():
+            if 'xyz' not in homed_axes_resp['result']['status']['toolhead']['homed_axes'].lower():
                 gcmd_run("G28")
-            
+
             gcmd_run(f"G90")
             gcmd_run(f"G0 X{x} Y{y} Z{z}")
             gcmd_run(f"M400")
