@@ -84,6 +84,12 @@ def main():
             gcmd_run(f"G0 X{x} Y{y} Z{z}")
             gcmd_run(f"M400")
 
+            # Home all axes if needed
+            request = {"method": "objects/query", "params": {"toolhead": ["homed_axes"]}}
+            homed_axes_resp = krpc.query(request)
+            if 'xyz' not in homed_axes_resp.lower():
+                gcmd_run("G28")
+
             # Subscribe to accelerometer data
             if axis == 'x':
                 sensor = sensor_name_x
